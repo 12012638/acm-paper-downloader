@@ -1,0 +1,21 @@
+# ACM论文下载器依赖包
+
+# 通用依赖
+pandas>=1.3.0
+openpyxl>=3.0.0
+requests>=2.25.0
+
+# Selenium版本依赖（需要ChromeDriver）
+selenium>=4.0.0
+
+# Requests版本依赖（校园网推荐，无需ChromeDriver）
+beautifulsoup4>=4.9.0
+lxml>=4.6.0
+
+# Enhanced版本依赖
+# 包含所有requests版本依赖，另外增加：
+fake-useragent>=1.1.0  # 用于随机用户代理（可选但推荐）
+
+# Ultimate版本依赖（终极反爬虫版本）
+# 包含所有enhanced版本依赖，另外增加：
+cloudscraper>=1.2.60  # 用于绕过Cloudflare保护（强烈推荐）
