@@ -157,14 +157,16 @@ class ACMPaperDownloaderUltimate:
     def try_alternative_search_methods(self, title):
         """尝试多种搜索方法"""
         search_methods = [
-            # 方法1: 直接搜索
+            # 方法1: 传统搜索URL（之前成功率较高）
             lambda t: self.base_url + quote(t),
             # 方法2: 简化搜索（去掉特殊字符）
             lambda t: self.base_url + quote(re.sub(r'[^\w\s]', ' ', t)),
             # 方法3: 只搜索前几个关键词
             lambda t: self.base_url + quote(' '.join(t.split()[:5])),
-            # 方法4: 使用Google Scholar风格的搜索
-            lambda t: f"https://dl.acm.org/action/doSearch?AllField={quote(t)}"
+            # 方法4: 使用ACM的doSearch API - 全字段搜索
+            lambda t: f"https://dl.acm.org/action/doSearch?AllField={quote(t)}&expand=all",
+            # 方法5: 使用ACM的doSearch API - 标题搜索
+            lambda t: f"https://dl.acm.org/action/doSearch?Title={quote(t)}&expand=all"
         ]
         
         for i, method in enumerate(search_methods, 1):
@@ -176,7 +178,7 @@ class ACMPaperDownloaderUltimate:
                     return result
                     
                 # 每次尝试后等待
-                wait_time = random.randint(15, 30)
+                wait_time = random.randint(3, 8)
                 print(f"方法 {i} 失败，等待{wait_time}秒后尝试下一种方法...")
                 time.sleep(wait_time)
                 
@@ -197,7 +199,7 @@ class ACMPaperDownloaderUltimate:
                 
                 # 添加随机延迟
                 if attempt > 0:
-                    wait_time = random.randint(20, 40)
+                    wait_time = random.randint(5, 15)
                     print(f"第{attempt+1}次尝试前等待{wait_time}秒...")
                     time.sleep(wait_time)
                 
@@ -232,7 +234,7 @@ class ACMPaperDownloaderUltimate:
                 response.raise_for_status()
                 
                 # 随机等待，模拟人类行为
-                wait_time = random.randint(8, 15)
+                wait_time = random.randint(3, 8)
                 print(f"页面加载等待{wait_time}秒...")
                 time.sleep(wait_time)
                 
@@ -272,7 +274,7 @@ class ACMPaperDownloaderUltimate:
             except Exception as e:
                 print(f"第{attempt+1}次搜索请求出错: {e}")
                 if attempt < max_retries - 1:
-                    wait_time = random.randint(20, 40)
+                    wait_time = random.randint(5, 15)
                     print(f"等待{wait_time}秒后重试...")
                     time.sleep(wait_time)
                 else:
@@ -304,7 +306,7 @@ class ACMPaperDownloaderUltimate:
             response.raise_for_status()
             
             # 随机等待
-            wait_time = random.randint(5, 12)
+            wait_time = random.randint(2, 5)
             print(f"详情页加载等待{wait_time}秒...")
             time.sleep(wait_time)
             
@@ -421,7 +423,7 @@ class ACMPaperDownloaderUltimate:
                 
                 # 网络礼仪：随机等待，避免被封IP
                 if i < len(titles):  # 最后一个不需要等待
-                    wait_time = random.randint(45, 90)
+                    wait_time = random.randint(15, 30)
                     print(f"\n等待{wait_time}秒后处理下一篇论文...")
                     time.sleep(wait_time)
                 
